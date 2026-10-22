@@ -51,4 +51,7 @@ int main() {
 
     return 0;
 }
-//Time: O(n) — the array is scanned a constant number of times.
+/*
+Time: O(n) — the array is scanned a constant number of times.
+Space: O(1) — only a few variables are used.
+*/
