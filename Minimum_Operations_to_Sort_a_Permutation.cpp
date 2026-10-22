@@ -51,3 +51,4 @@ int main() {
 
     return 0;
 }
+//Time: O(n) — the array is scanned a constant number of times.
