@@ -65,3 +65,4 @@ int main() {
 
     return 0;
 }
+// Time complexity: O(m×n), as each cell is visited at most once.
