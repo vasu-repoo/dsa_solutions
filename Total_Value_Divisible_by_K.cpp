@@ -7,28 +7,31 @@ using namespace std;
 
 class Solution {
 public:
-    int countIslands(vector<vector<int>>& grid, int k) {
+    int countIslands(vector<vector<int> >& grid, int k) {
         int m = grid.size();
         int n = grid[0].size();
         int ans = 0;
 
-        vector<vector<bool>> vis(m, vector<bool>(n, false));
+        vector<vector<bool> > vis(m, vector<bool>(n, false));
+
         int dr[] = {-1, 1, 0, 0};
         int dc[] = {0, 0, -1, 1};
 
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 0 || vis[i][j])
+                if (grid[i][j] == 0 || vis[i][j]) {
                     continue;
+                }
 
                 long long sum = 0;
-                stack<pair<int, int>> st;
+                stack<pair<int, int> > st;
 
-                st.push({i, j});
+                st.push(make_pair(i, j));
                 vis[i][j] = true;
 
                 while (!st.empty()) {
-                    auto [r, c] = st.top();
+                    int r = st.top().first;
+                    int c = st.top().second;
                     st.pop();
 
                     sum += grid[r][c];
@@ -43,13 +46,14 @@ public:
                             !vis[nr][nc]) {
 
                             vis[nr][nc] = true;
-                            st.push({nr, nc});
+                            st.push(make_pair(nr, nc));
                         }
                     }
                 }
 
-                if (sum % k == 0)
+                if (sum % k == 0) {
                     ans++;
+                }
             }
         }
 
@@ -60,18 +64,17 @@ public:
 int main() {
     Solution sol;
 
-    vector<vector<int>> grid = {
-        {0, 2, 1, 0, 0},
-        {0, 5, 0, 0, 5},
-        {0, 0, 1, 0, 0},
-        {0, 1, 4, 7, 0},
-        {0, 2, 0, 0, 8}
-    };
+    vector<vector<int> > grid;
+    grid.push_back(vector<int>{0, 2, 1, 0, 0});
+    grid.push_back(vector<int>{0, 5, 0, 0, 5});
+    grid.push_back(vector<int>{0, 0, 1, 0, 0});
+    grid.push_back(vector<int>{0, 1, 4, 7, 0});
+    grid.push_back(vector<int>{0, 2, 0, 0, 8});
 
     int k = 5;
 
     cout << "Number of valid islands: "
-         << sol.countIslands(grid, k) << '\n';
+         << sol.countIslands(grid, k) << endl;
 
     return 0;
 }
