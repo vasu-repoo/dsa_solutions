@@ -1,77 +1,99 @@
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <queue>
+#include <tuple>
+#include <climits>
+#include <functional>
+
 using namespace std;
 
 class Solution {
 public:
-    int shortestPath(int n, vector<vector<int>>& edges,
+    int shortestPath(int n, vector<vector<int> >& edges,
                      string labels, int k) {
 
-        vector<vector<pair<int, int>>> adj(n);
+        // Build adjacency list
+        vector<vector<pair<int, int> > > adj(n);
 
-        // Build directed graph
-        for (auto &e : edges) {
-            int u = e[0];
-            int v = e[1];
-            int w = e[2];
+        for (int i = 0; i < edges.size(); i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int w = edges[i][2];
 
-            adj[u].push_back({v, w});
+            adj[u].push_back(make_pair(v, w));
         }
 
         const long long INF = LLONG_MAX;
 
-        // dist[node][consecutive_count]
-        vector<vector<long long>> dist(
+        // dist[node][consecutive count]
+        vector<vector<long long> > dist(
             n, vector<long long>(k + 1, INF)
         );
 
-        // {cost, node, consecutive_count}
+        // Min heap: {cost, node, count}
+        typedef tuple<long long, int, int> State;
+
         priority_queue<
-            tuple<long long, int, int>,
-            vector<tuple<long long, int, int>>,
-            greater<tuple<long long, int, int>>
+            State,
+            vector<State>,
+            greater<State>
         > pq;
 
+        // Starting node
         dist[0][1] = 0;
-        pq.push({0, 0, 1});
+        pq.push(make_tuple(0, 0, 1));
 
         while (!pq.empty()) {
 
-            auto [cost, u, cnt] = pq.top();
+            State current = pq.top();
             pq.pop();
 
-            // Ignore outdated states
-            if (cost != dist[u][cnt])
+            long long cost = get<0>(current);
+            int u = get<1>(current);
+            int cnt = get<2>(current);
+
+            // Skip outdated states
+            if (cost != dist[u][cnt]) {
                 continue;
+            }
 
             // Destination reached
-            if (u == n - 1)
+            if (u == n - 1) {
                 return (int)cost;
+            }
 
-            for (auto [v, w] : adj[u]) {
+            // Explore neighbours
+            for (int i = 0; i < adj[u].size(); i++) {
+
+                int v = adj[u][i].first;
+                int w = adj[u][i].second;
 
                 int newCnt;
 
-                if (labels[u] == labels[v])
+                if (labels[u] == labels[v]) {
                     newCnt = cnt + 1;
-                else
+                } 
+                else {
                     newCnt = 1;
+                }
 
                 // Invalid consecutive sequence
-                if (newCnt > k)
+                if (newCnt > k) {
                     continue;
+                }
 
                 long long newCost = cost + w;
 
+                // Relaxation
                 if (newCost < dist[v][newCnt]) {
 
                     dist[v][newCnt] = newCost;
 
-                    pq.push({
-                        newCost,
-                        v,
-                        newCnt
-                    });
+                    pq.push(make_tuple(
+                        newCost, v, newCnt
+                    ));
                 }
             }
         }
@@ -87,16 +109,18 @@ int main() {
     // Example 1
     int n = 3;
 
-    vector<vector<int>> edges = {
-        {0, 1, 1},
-        {1, 2, 1},
-        {0, 2, 3}
-    };
+    vector<vector<int> > edges;
+
+    edges.push_back({0, 1, 1});
+    edges.push_back({1, 2, 1});
+    edges.push_back({0, 2, 3});
 
     string labels = "aab";
     int k = 1;
 
-    cout << sol.shortestPath(n, edges, labels, k) << endl;
+    cout << "Output: "
+         << sol.shortestPath(n, edges, labels, k)
+         << endl;
 
     return 0;
 }
