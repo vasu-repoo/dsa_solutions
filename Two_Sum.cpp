@@ -40,7 +40,6 @@ int main() {
         cout << "Indices: [" << result[0] << ", " << result[1] << "]" << endl;
     } else {
         cout << "No solution found." << endl;
-    }
-    
+    }   
     return 0;
 }
